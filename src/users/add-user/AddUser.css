@@ -1,0 +1,58 @@
+.datePicker {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    margin-left: 15px;
+}
+.multiselect {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+hr {
+    color: #00c2c7;
+    background-color: #00c2c7;
+}
+
+
+
+.btnAdd {
+    width: 170px;
+   
+}
+.buttons .col-md-6 {
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+
+ .form-group.required .form-label:after {
+  content:"*";
+  color:red;
+} 

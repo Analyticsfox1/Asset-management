@@ -1,0 +1,32 @@
+.main-container {
+    min-height: 100vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+.tabs {
+    display: flex;
+    width: 85vw;
+}
+.userTabs {
+    width: 80vw;    
+}
+.tab {
+    padding:20px;
+}
+.addButton {
+    margin-top: 10px;
+    width: 250px
+}
+.section {
+    min-height: 100vh;
+    width: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.modal-dialog {
+    max-width: none;
+    margin:60px;
+}
