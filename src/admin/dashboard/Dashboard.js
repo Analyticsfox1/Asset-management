@@ -5,6 +5,8 @@ import AddUser from '../../users/add-user/AddUser'
 import UserList from '../../users/user-list/UserList'
 import Register from '../../admin/register/Register'
 import AddSoftwareAsset from '../../assets/addSoftwareAssets/AddSoftwareAsset'
+import AddHardwareAsset from '../../assets/addHardwareAsset/AddHardwareAsset'
+import AddCommonAsset from '../../assets/addCommonAsset/addCommonAsset';
 
 export default class Dashboard extends React.Component {
     constructor(props) {
@@ -13,7 +15,8 @@ export default class Dashboard extends React.Component {
             showEmployeeModal: false,
             showAdminModal: false,
             showHardwareModal: false,
-            showSoftwareModal: false
+            showSoftwareModal: false,
+            showCommonModal: false
         }
     }
 
@@ -30,7 +33,11 @@ export default class Dashboard extends React.Component {
     }
 
     onClickHardware = () => {
-        this.setState({showSoftwareModal: true})
+        this.setState({showHardwareModal: true})
+    }
+
+    onClickCommonAsset = () => {
+        this.setState({showCommonModal: true})
     }
 
     handleModalClose = () => {
@@ -38,6 +45,7 @@ export default class Dashboard extends React.Component {
         this.setState({showEmployeeModal:false})
         this.setState({showHardwareModal: false})
         this.setState({showSoftwareModal: false})
+        this.setState({showCommonModal:false})
     }
 
     render(){
@@ -49,8 +57,40 @@ export default class Dashboard extends React.Component {
                     </Tab>
                     <Tab className="tab" eventKey="assets" title="ASSETS">
                         <div className="row">
-                            <div className="col-md-9"></div>
+                            <div className="col-md-3 col-sm-12 col-xs-12 section">
+                                <Button variant="info addButton" onClick={this.onClickSoftware}>Add Software Asset</Button>
+                                <Button variant="info addButton" onClick={this.onClickHardware}>Add Hardware Asset</Button>
+                            </div>
+                            <div className="col-md-9 col-sm-12 col-xs-12">
+
+                            </div>
                         </div>
+                        <Modal show={this.state.showSoftwareModal} onHide={this.handleModalClose}  className="modalBody" >
+                            <Modal.Header closeButton>
+                                <Modal.Title>New Software Asset</Modal.Title>
+                            </Modal.Header>
+
+                            <Modal.Body>
+                                <AddSoftwareAsset/>
+                            </Modal.Body>
+
+                            <Modal.Footer>
+                                <Button variant="primary" onClick={this.handleModalClose}>Close</Button>  
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={this.state.showHardwareModal} onHide={this.handleModalClose}  className="modalBody" >
+                            <Modal.Header closeButton>
+                                <Modal.Title>New Hardware Asset</Modal.Title>
+                            </Modal.Header>
+
+                            <Modal.Body>
+                                <AddHardwareAsset/>
+                            </Modal.Body>
+
+                            <Modal.Footer>
+                                <Button variant="primary" onClick={this.handleModalClose}>Close</Button>  
+                            </Modal.Footer>
+                        </Modal>
                     </Tab>
                     <Tab className="tab" eventKey="users" title="EMPLOYEES">
                         <div className="row">
@@ -60,8 +100,6 @@ export default class Dashboard extends React.Component {
                                 <div className="col-md-3 col-sm-12 col-xs-12 section">
                                     <Button variant="info addButton" onClick={this.onClickEmployee}>Add New Employee</Button>
                                     <Button variant="info addButton" onClick={this.onClickAdmin}>Add New Administrator</Button>
-                                    <Button variant="info addButton" onClick={this.onClickSoftware}>Add Software Asset</Button>
-                                    <Button variant="info addButton" onClick={this.onClickHardware}>Add Hardware Asset</Button>
                                 </div> 
                         </div>
                     <Modal show={this.state.showEmployeeModal} onHide={this.handleModalClose} className="modalBody">
@@ -90,25 +128,30 @@ export default class Dashboard extends React.Component {
                             <Button variant="primary" onClick={this.handleModalClose}>Close</Button>  
                         </Modal.Footer>
                     </Modal>
-                    <Modal show={this.state.showSoftwareModal} onHide={this.handleModalClose}  className="modalBody" >
+                 
+                    </Tab>
+                    <Tab className="tab" eventKey="reports" title="REPORTS">
+                        <p>REPORTS</p>
+                    </Tab>
+                    <Tab className="tab" eventKey="common_assets" title="Common Assets">
+                        <div className='row'>
+                            <div className="col-md-3 col-xs-12 col-sm-12">
+                                <Button variant="info addButton" onClick={this.onClickCommonAsset}>Add New Common Asset</Button>
+                            </div>
+                            <div className="col-md-9"></div>
+                        </div>
+                        <Modal show={this.state.showCommonModal} onHide={this.handleModalClose}  className="modalBody" >
                         <Modal.Header closeButton>
-                            <Modal.Title>New Software Asset</Modal.Title>
                         </Modal.Header>
 
                         <Modal.Body>
-                            <AddSoftwareAsset/>
+                            <AddCommonAsset/>
                         </Modal.Body>
 
                         <Modal.Footer>
                             <Button variant="primary" onClick={this.handleModalClose}>Close</Button>  
                         </Modal.Footer>
                     </Modal>
-                    </Tab>
-                    <Tab className="tab" eventKey="reports" title="REPORTS">
-                        <p>REPORTS</p>
-                    </Tab>
-                    <Tab className="tab" eventKey="common_assets" title="Common Assets">
-                        <p>COMMON ASSETS</p>
                     </Tab>
                 </Tabs>
             </div>
