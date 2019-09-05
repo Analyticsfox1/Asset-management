@@ -2,6 +2,10 @@ import React from 'react'
 import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import './addSoftwareAssets.css'
+import {Growl} from 'primereact/growl';
+
+
+let validators = require('../../validators').validators()
 
 export default class AddSoftwareAsset extends React.Component {
 
@@ -47,12 +51,42 @@ export default class AddSoftwareAsset extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
+        const {software_name, license_name, license_identification_number, desc, cost, software_category, other, purchase_date,
+            expiry_date} = this.state
+        
+        var ValidationChk = ''
+        if(software_name !== '' ||license_name !== '' || license_identification_number !== '' || cost !== ''){
+            if(!validators.RegexAlphaNumeric(license_name)){
+                ValidationChk += 'License Name must be alphanumeric'
+            }
+            if(!validators.RegexAlphaNumeric(license_identification_number)){
+                ValidationChk += 'License Identification Number must be alphanumeric'
+            }
+            if(!validators.RegexPrice(cost)){
+                ValidationChk += 'Cost must be numeric'
+            }
+            if(ValidationChk !== ''){
+                ValidationChk = 'Please fill valid details ' + ValidationChk
+            }
+            else {
+                var obj = {software_name: software_name, license_name: license_name, license_identification_number: license_identification_number, desc: desc, cost: cost, software_category: software_category, other: other,purchase_date: purchase_date,expiry_date: expiry_date}
+                var arr = []
+                localStorage.setItem('New_software_asset', arr.push(obj))
+                this.growl.show({life: 8000, severity: 'success', summary: 'Software asset added successfully!', detail: 'New Software Asset was successfully added.', closable:'true' });
+            }
+        }
+        else {
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful - Fill all mandatory fields.', detail: 'Software name, license name, license identification number and cost are mandatory.', closable:'true' });
+        }
+     
+        
         console.log(this.state)
     }
     render() {
         return (
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
                 <h2 style={{color: '#00c2c7'}}>New Software Asset</h2>
+                <Growl ref={(el) => this.growl = el} />
                 <Card className="col-md-12 col-sm-12 col-xs-12" style={{ height:'auto', padding: '10px' }}>
                     <Card.Body>
                        <Form>

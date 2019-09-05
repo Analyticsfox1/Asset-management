@@ -8,6 +8,8 @@ import 'primereact/resources/themes/nova-light/theme.css'
 import 'primeicons/primeicons.css';
 import "react-datepicker/dist/react-datepicker.css";
 import './AddUser.css'
+import {Growl} from 'primereact/growl';
+
 let validators=require('../../validators').validators();
 
 
@@ -29,8 +31,8 @@ export default class AddUser extends React.Component {
             status: '',
             list_hardware: [],
             list_software: [],
-            hardware_assets_owned: {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: '', issue_date: '', product_warranty:'', earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }},
-            software_assets_owned: {category: '', details: { license_name: '', license_identification_number: '', software_description: '', software_cost: '', software_sub_category: '', software_purchase_date: '', software_expiry_date: ''}},
+            hardware_assets_owned: {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date( ),product_warranty:'', earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }},
+            software_assets_owned: {category: '', details: { license_name: '', license_identification_number: '', software_description: '', software_cost: '', software_sub_category: '', software_purchase_date: new Date(), software_expiry_date: new Date()}},
             hardware_category: '',
             prod_description: '', ram:'', supplier: '', model_number:'', serial_number:'',purchase_date:new Date(), issue_date:new Date(), product_warranty:'', earlier_used:'',product_remarks:'', product_cost:''  ,
             software_category:'',
@@ -62,12 +64,11 @@ export default class AddUser extends React.Component {
         switch(categoryName){
             case 'hardware_category': {
                 this.setState({hardware_category:categoryValue})
-                this.state.hardware_assets_owned.category = categoryValue;
                 break;
             }
             case 'software_category': {
                 this.setState({software_category: categoryValue})
-                this.state.software_assets_owned.category = categoryValue;
+                break;
             }
             case 'prod_description':
             case 'ram':
@@ -91,15 +92,17 @@ export default class AddUser extends React.Component {
             case 'software_cost': 
             case 'software_purchase_date': 
             case 'software_expiry_date': {
-                this.state.software_assets_owned.details[categoryName] = categoryValue;
+                 this.state.software_assets_owned.details[categoryName] = categoryValue;
                 break;
             }
             default: {
                 this.setState({[categoryName]: categoryValue});
+                break;
             }
         }
 
         this.setState({hardware_assets_owned: this.state.hardware_assets_owned});
+        this.setState({software_assets_owned: this.state.software_assets_owned})
 
         
     };
@@ -107,10 +110,11 @@ export default class AddUser extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         
-        const {empid,fname, lname, email, phone, mobile, address, department, designation} = this.state;
+        const {empid,fname, lname, email, phone, mobile, address, department, designation, doj} = this.state;
         var ValidationChk = ''
         if(empid === null || empid === ''){
-            alert('Employee ID is mandatroy')
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Employee ID is mandatory', detail: 'Please fill all mandatory fields', closable:'true' });
+
         }
         if(!validators.RegexNames(fname)){
             ValidationChk += '-First Name'
@@ -128,7 +132,6 @@ export default class AddUser extends React.Component {
             ValidationChk += '-Mobile Number'
         }
         if(!validators.RegexAlphaNumeric(address)){
-            console.log(address)
             ValidationChk += '-Address'
         }
         if(!validators.RegexNames(department)){
@@ -141,11 +144,13 @@ export default class AddUser extends React.Component {
             ValidationChk += 'Hardware Assets'
         } 
         if(ValidationChk !== ''){
-            alert('Please fill valid '+ ValidationChk)
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Please fill valid details', detail: ValidationChk, closable:'true' });
         }
         
         else {
-            var user_data = {"empid":empid, "fname":fname, "lname":lname, "email":email+'@analyticsfoxsoftwares.com', "phone":phone, "mobile":mobile, "address":address, "department": department, "designation": designation}
+            var joining = JSON.stringify(new Date(doj))
+            var date = joining.substring(10)
+            var user_data = {"empid":empid, "fname":fname, "lname":lname, "email":email+'@analyticsfoxsoftwares.com', "phone":phone, "mobile":mobile, "address":address, "department": department, "designation": designation, "doj": date}
         
             localStorage.setItem("user_data", JSON.stringify(user_data))
     
@@ -154,6 +159,7 @@ export default class AddUser extends React.Component {
             localStorage.setItem("software_assets", JSON.stringify(this.state.list_software))
     
             console.log(user_data, this.state.list_hardware, this.state.list_software )
+            this.growl.show({life: 8000, severity: 'success', summary: 'Employee added successfully!', detail: 'Employee Details were successfully added.', closable:'true' });
         }
     }
 
@@ -161,24 +167,26 @@ export default class AddUser extends React.Component {
         var details = this.state.hardware_assets_owned.details
         let ValidationChk = '';
         if(!validators.RegexAlphaNumeric(details.prod_description)){
-            ValidationChk +=  ' -Product Description ';
+            ValidationChk +=  ' -Product Description must be alphanumeric';
         } 
         if(!validators.RegexAlphaNumeric(details.serial_number)){
-            ValidationChk +=  '-Serial Number ';
+            ValidationChk +=  '-Serial Number must be alphanumeric';
         }
         if(!validators.RegexAlphaNumeric(details.model_number)){
-            ValidationChk +=  '-Model Number ';
+            ValidationChk +=  '-Model Number must be alphanumeric';
         }
         if(!validators.RegexAlphaNumericWarranty(details.product_warranty)){
-            ValidationChk +=  '-Warranty ';
+            ValidationChk +=  '-Warranty must be 6 characters alphanumeric';
         }
         if(!validators.RegexPrice(details.product_cost)){
-            ValidationChk += '-Product Cost'
+            ValidationChk += '-Product Cost must be numeric.'
         }
         if(ValidationChk !== ''){
-            alert('PLease fill valid ' + ValidationChk)
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Please fill valid details', detail: ValidationChk, closable:'true' });
         }
         else {
+            console.log("Add more",this.state.hardware_assets_owned)
+
             let hardware_assets_owned = {};
         
             hardware_assets_owned[this.state.hardware_category] = this.state.hardware_assets_owned.details
@@ -186,6 +194,7 @@ export default class AddUser extends React.Component {
             this.state.list_hardware.push(hardware_assets_owned)
             
             console.log('List of hardware assets',this.state.list_hardware)
+            this.growl.show({life: 8000, severity: 'success', summary: 'Hardware Asset added successfully!', detail: 'Hardware asset was successfully added.', closable:'true' });
         }
     }
 
@@ -193,17 +202,17 @@ export default class AddUser extends React.Component {
         var details = this.state.software_assets_owned.details
         let ValidationChk = ''
         if(!validators.RegexAlphaNumeric(details.license_name)){
-            ValidationChk += '-License name'
+            ValidationChk += '-License name must be alphanumeric'
         }
         if(!validators.RegexAlphaNumeric(details.license_identification_number)){
             console.log(details.license_identification_number)
-            ValidationChk += '-License Identification Number'
+            ValidationChk += '-License Identification Number must be alphanumeric.'
         }
         if(!validators.RegexPrice(details.software_cost)){
-            ValidationChk += '-Software Cost'
+            ValidationChk += '-Software Cost must be numeric'
         }
         if(ValidationChk !== ''){
-            alert('Please fill valid '+ ValidationChk)
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Please fill valid details', detail: ValidationChk, closable:'true' });
         }
         else{
             let software_assets_owned = {}
@@ -213,6 +222,8 @@ export default class AddUser extends React.Component {
             this.state.list_software.push(software_assets_owned)
             
             console.log('List of software assets', this.state.list_software)
+            this.growl.show({life: 8000, severity: 'success', summary: 'Software Asset added successfully!', detail: 'Software asset was successfully added.', closable:'true' });
+
         }
     }
 
@@ -227,6 +238,7 @@ export default class AddUser extends React.Component {
        this.refs.remarks.value = '' 
        this.refs.product_cost.value= ''
        this.refs.product_warranty.value = ''
+       this.state.hardware_assets_owned= {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date( ),product_warranty:'', earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }}   
     }
 
     handleSoftwareAddMore = () => {
@@ -235,12 +247,14 @@ export default class AddUser extends React.Component {
         this.refs.software_description.value = ''
         this.refs.software_cost.value = ''
         this.refs.software_purchase_date = new Date()
-        this.refs.software_expiry_date = new Date() 
+        this.refs.software_expiry_date = new Date()
+        this.state.software_assets_owned= {category: '', details: { license_name: '', license_identification_number: '', software_description: '', software_cost: '', software_sub_category: '', software_purchase_date: new Date(), software_expiry_date: new Date()}}
     }
 
     render(){
         return(
             <div>
+                <Growl ref={(el) => this.growl = el} />
                 <Card className="col-md-12 col-sm-12 col-xs-12" style={{ height:'auto', padding: '10px', width: '1200px' }}>
                     <Card.Body>
                             <div className="row" className="heading">

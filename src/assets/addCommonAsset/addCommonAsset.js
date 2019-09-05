@@ -2,6 +2,10 @@ import React from 'react'
 import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import './addCommonAsset.css'
+import {Growl} from 'primereact/growl';
+
+
+let validators = require('../../validators').validators()
 
 export default class AddCommonAsset extends React.Component {
 
@@ -47,12 +51,49 @@ export default class AddCommonAsset extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
+        var ValidationChk = ''
         console.log(this.state)
+       const { name, desc, category, supplier, price, unit_value, qty, model_number, serial_number, purchase_date} = this.state
+       
+        if( name !== "" || price !== "" || model_number !== "" || serial_number !== ""){
+            if(!validators.RegexAlphaNumeric(name)){
+                ValidationChk += '-Asset Name must be alphanumeric'
+            }
+            if(!validators.RegexPrice(price)){
+                ValidationChk += '-Price should be numeric'
+            }
+            if(!validators.RegexPrice(unit_value)){
+                ValidationChk += '-Unit price should be numeric'
+            }
+            if(!validators.RegexPrice(qty)){
+                ValidationChk =+ '-Quantity should be numeric'
+            }
+            if(!validators.RegexAlphaNumeric(serial_number)){
+                ValidationChk +=  '-Serial Number must be up to 50 alphanumeric ';
+            }
+            if(!validators.RegexAlphaNumeric(model_number)){
+                ValidationChk +=  '-Model Number must be up to 50 alphanumeric ';
+            }
+            if(validators !== ''){
+                ValidationChk = 'Please fill valid details' + '\n' + ValidationChk
+            }
+            else{
+                var common_obj = {name: name, desc: desc, category: category, supplier: supplier, price: price, unit_price: unit_value, qty: qty, model_number: model_number, serial_number: serial_number, purchase_date: purchase_date}
+                localStorage.setItem("common_assets", common_obj )
+                this.growl.show({life: 8000, severity: 'success', summary: 'Asset added successfully!', detail: 'New Software Asset', closable:'true' });
+            }
+        }
+        else {
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful - Fill mandatory fields', detail: 'Name, pricce, model number and serial number are mandatory', closable:'true' });
+        }
+  
     }
+
     render() {
         return (
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
                 <h2 style={{color: '#00c2c7'}}>New Common Asset</h2>
+                <Growl ref={(el) => this.growl = el} />
                 <Card className="col-md-12 col-sm-12 col-xs-12" style={{ height:'auto', padding: '10px' }}>
                     <Card.Body>
                             <Form>

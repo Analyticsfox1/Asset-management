@@ -2,22 +2,19 @@ import React from 'react'
 import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import './addHardwareAsset.css'
+import {Growl} from 'primereact/growl';
+
+let validators = require('../../validators').validators()
 
 export default class AddHardwareAsset extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            software_name: '',
-            license_name: '',
-            license_identification_number: '',
+            hardware_name: '',
             desc: '',
-            cost: '',
-            software_category: '',
-            other: '',
-            purchase_date: new Date(),
-            expiry_date: new Date(),
-            disableOther: true
+            model_no: '',
+            serial_no: ''
         }
     }
 
@@ -47,36 +44,61 @@ export default class AddHardwareAsset extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
+        const { hardware_name, desc, model_no, serial_no } = this.state
+        let ValidationChk = ''
+        if(hardware_name !== '' || model_no !== '' || serial_no !== ''){
+            if(!validators.RegexAlphaNumeric(hardware_name)){
+                ValidationChk += 'Hardware name should be alphanumeric'
+            }
+            if(!validators.RegexAlphaNumeric(model_no)){
+                ValidationChk += 'Model Number should be alphanumeric'
+            }
+            if(!validators.RegexAlphaNumeric(serial_no)){
+                ValidationChk += 'Serial Number should be alphanumeric'
+            }
+            if(ValidationChk !== ''){
+                ValidationChk = 'Please fill valid details' + '\n' + ValidationChk
+            }
+            else {
+                var arr = []
+                var obj = {hardware_name: hardware_name, desc: desc, model_no: model_no, serial_no: serial_no}
+                localStorage.setItem('New_hardware_assets', arr.push(obj))
+                this.growl.show({severity: 'success', summary: 'Asset added successfully!', detail: 'New Hardware Asset', closable:'true' });
+            }
+        } else {
+            this.growl.show({severity: 'danger', summary: 'Unsuccessful - Fill mandatory fields', detail: 'Hardware name, model number and serial number are mandatory', closable:'true' });
+        }
         console.log(this.state)
     }
     render() {
         return (
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
                 <h2 style={{color: '#00c2c7'}}>New Hardware Asset</h2>
+                <Growl ref={(el) => this.growl = el} />
                 <Card className="col-md-12 col-sm-12 col-xs-12" style={{ height:'auto', padding: '10px' }}>
                     <Card.Body>
                        <Form>
                                 <div className="col-md-6">
                                     <Form.Group>
-                                        <Form.Label>Software Name</Form.Label>
-                                        <Form.Control ref={this.software_name} type="text" name="software_name" placeholder="Software Name" onChange={this.handleChange}/>
+                                        <Form.Label>Hardware Name</Form.Label>
+                                        <Form.Control type="text" name="hardware_name" placeholder="Hardware Name" onChange={this.handleChange}/>
                                     </Form.Group>
                                    
 
                                     <Form.Group>
                                         <Form.Label>Description</Form.Label>
-                                        <Form.Control as="textarea" name="desc" rows={3} onChange={this.handleChange} placeholder="Description" ref="desc"/>
+                                        <Form.Control as="textarea" name="desc" rows={3} onChange={this.handleChange} placeholder="Description" />
                                     </Form.Group>
                                
                     
                                 <Form.Group>
                                     <Form.Label>Model Number</Form.Label>
-                                    <Form.Control type="text" name="other" placeholder="Other category" onChange={this.handleChange}/>
+                                    <Form.Control type="text" name="model_no" placeholder="Model Number" onChange={this.handleChange}/>
                                 </Form.Group>
 
                                 <Form.Group>
                                     <Form.Label>Serial Number</Form.Label>
-                                    <Form.Control type="text" name="other" placeholder="Other category" onChange={this.handleChange}/>
+                                    <Form.Control type="text" name="serial_no" placeholder="Serial Number" onChange={this.handleChange}/>
                                 </Form.Group>
                                 </div>
                             </Form>
