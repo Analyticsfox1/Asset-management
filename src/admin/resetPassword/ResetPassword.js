@@ -1,6 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {Button, Card, Form, Alert} from 'react-bootstrap'
+import * as urls from '../../utils/api'
+import {Growl} from 'primereact/growl';
+
+let fetchApi = require('../../utils/fetch').fetchApi()
 
 export default class ResetPassword extends React.Component {
     constructor(props){
@@ -9,46 +13,42 @@ export default class ResetPassword extends React.Component {
             email: '',
             password: '',
             cpassword: '',
-            show: false,
-            alertMessage:''
         }
     }
+
     handleChange = (e) => {
         this.setState({[e.target.name]: e.target.value});
     };
+
+    callbackFn = (res) => {
+        if(res.code === 'success'){
+            this.growl.show({life: 8000, severity: 'success', summary: 'Password updated successfully.', detail: 'Your password has been reset successfuly.', closable:'true' });
+            this.props.history.push('/')
+        } 
+        if(res.code === 'UNF'){
+            this.growl.show({life: 8000, severity: 'error', summary: 'User not registeres.', detail: 'Seems like this user is not registered with us.', closable:'true' });
+        }
+    }
 
     handleSubmit = (e) => {
         e.preventDefault()
         console.log(this.state.email, this.state.password, this.state.cpassword)
         if(this.state.email === '' || this.state.password === '' || this.state.cpassword === ''){
-            this.setState({alertMessage:'Please fill all the fields.'})
-            this.setState({show: true})
+            this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful', detail: 'Please fill all the fields.', closable:'true' });
         } 
-        else if(this.state.email !== localStorage.getItem("email")){
-            this.setState({alertMessage:'This email isn\'t registered with us'})
-            this.setState({show: true}) 
-        }
         else if(this.state.password !== this.state.cpassword) {
-            this.setState({alertMessage:'Passwords donot match. Please try again'})
-            this.setState({show: true}) 
-        } else {
-            this.setState({show: false})
-            localStorage.setItem("password", this.state.cpassword)
-            alert('Password reset succesful!')
-            this.props.history.push('/')
+            this.growl.show({life: 8000, severity: 'error', summary: 'Passwords donot match.', detail: 'Please try again.', closable:'true' });
+        } 
+        else {
+            const body = JSON.stringify({username:this.state.email, password: this.state.password})
+            fetchApi.fetchData(urls.reset_password, 'POST', body, this.callbackFn)
         }
     }
 
     render() {
         return(
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
-                <Alert variant={'danger'} show={this.state.show}>{this.state.alertMessage}
-                <div className="d-flex justify-content-end">
-                        <Link onClick={() => this.setState({show: false})} variant="danger" height="10px">
-                            Close
-                        </Link>
-                    </div>
-               </Alert>
+                <Growl ref={(el) => this.growl = el} />
                 <h1 style={{color: '#00c2c7'}}>Reset Password</h1>
                 <Card className="col-md-5 col-sm-10 col-xs-10" style={{ height:'auto', padding: '10px' }}>
                     <Card.Body>

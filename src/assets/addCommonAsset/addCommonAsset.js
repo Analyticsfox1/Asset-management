@@ -21,7 +21,8 @@ export default class AddCommonAsset extends React.Component {
             qty: '',
             model_number: '',
             serial_number: '',
-            purchase_date: new Date()
+            purchase_date: new Date(),
+            asset_list: []
         }
     }
 
@@ -52,13 +53,11 @@ export default class AddCommonAsset extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault()
         var ValidationChk = ''
-        console.log(this.state)
+        console.log('State',this.state)
        const { name, desc, category, supplier, price, unit_value, qty, model_number, serial_number, purchase_date} = this.state
-       
+       console.log('name', name)
         if( name !== "" || price !== "" || model_number !== "" || serial_number !== ""){
-            if(!validators.RegexAlphaNumeric(name)){
-                ValidationChk += '-Asset Name must be alphanumeric'
-            }
+            console.log('handleSubmit')
             if(!validators.RegexPrice(price)){
                 ValidationChk += '-Price should be numeric'
             }
@@ -74,12 +73,13 @@ export default class AddCommonAsset extends React.Component {
             if(!validators.RegexAlphaNumeric(model_number)){
                 ValidationChk +=  '-Model Number must be up to 50 alphanumeric ';
             }
-            if(validators !== ''){
-                ValidationChk = 'Please fill valid details' + '\n' + ValidationChk
+            if(ValidationChk !== ''){
+                this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Please fill valid details', detail: ValidationChk, closable:'true' });
             }
             else{
                 var common_obj = {name: name, desc: desc, category: category, supplier: supplier, price: price, unit_price: unit_value, qty: qty, model_number: model_number, serial_number: serial_number, purchase_date: purchase_date}
-                localStorage.setItem("common_assets", common_obj )
+                this.state.asset_list.push(common_obj)
+                localStorage.setItem("common_assets", JSON.stringify(this.state.asset_list) )
                 this.growl.show({life: 8000, severity: 'success', summary: 'Asset added successfully!', detail: 'New Software Asset', closable:'true' });
             }
         }

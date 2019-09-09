@@ -82,7 +82,7 @@ export default class UserList extends React.Component {
                         <Modal.Body>
                             <div>
                             <p><b>Emp ID : </b> {selectedRow.empid}</p>
-                            <p><b>Name : </b>Name : {selectedRow.fname + '' + selectedRow.lname}</p>
+                            <p><b>Name : </b>{selectedRow.fname + '' + selectedRow.lname}</p>
                             <p><b>Email : </b>{selectedRow.email} </p>
                             <p><b>Mobile Number : </b>{selectedRow.mobile}</p>
                             <p><b>Department : </b>{selectedRow.department}</p>

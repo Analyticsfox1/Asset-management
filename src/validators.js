@@ -5,7 +5,7 @@ exports.validators = function() {
 
 validators.RegexAlphaNumeric=function(txt){
     var isValid=false;
-    var regex= /([0-9a-zA-Z]){2,50}$/g;
+    var regex= /^[a-zA-Z0-9]*$/g;
 
     if(txt !== null && txt.trim() !== ""){
         if(txt.length >=3 && txt.length<=50 ) {

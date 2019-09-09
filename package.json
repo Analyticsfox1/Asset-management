@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ag-grid-community": "^21.2.1",
+    "ag-grid-react": "^21.2.1",
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
     "create-react-class": "^15.6.3",
@@ -14,6 +16,7 @@
     "react-bootstrap": "^1.0.0-beta.12",
     "react-bootstrap-multiselect": "^2.4.1",
     "react-bootstrap-table": "^4.3.1",
+    "react-csv": "^1.1.1",
     "react-datepicker": "^2.8.0",
     "react-dom": "^16.9.0",
     "react-router": "^5.0.1",

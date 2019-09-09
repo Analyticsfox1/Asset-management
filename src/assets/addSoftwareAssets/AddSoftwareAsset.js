@@ -77,11 +77,9 @@ export default class AddSoftwareAsset extends React.Component {
         }
         else {
             this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful - Fill all mandatory fields.', detail: 'Software name, license name, license identification number and cost are mandatory.', closable:'true' });
-        }
-     
-        
-        console.log(this.state)
+        }     
     }
+    
     render() {
         return (
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>

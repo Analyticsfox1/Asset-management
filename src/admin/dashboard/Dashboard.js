@@ -7,6 +7,7 @@ import Register from '../../admin/register/Register'
 import AddSoftwareAsset from '../../assets/addSoftwareAssets/AddSoftwareAsset'
 import AddHardwareAsset from '../../assets/addHardwareAsset/AddHardwareAsset'
 import AddCommonAsset from '../../assets/addCommonAsset/addCommonAsset';
+import CommonAssetList from '../../assets/commonAssetList/commonAssetList';
 
 export default class Dashboard extends React.Component {
     constructor(props) {
@@ -57,13 +58,12 @@ export default class Dashboard extends React.Component {
                     </Tab>
                     <Tab className="tab" eventKey="assets" title="ASSETS">
                         <div className="row">
+                        <div className="col-md-9 col-sm-12 col-xs-12"></div>
                             <div className="col-md-3 col-sm-12 col-xs-12 section">
                                 <Button variant="info addButton" onClick={this.onClickSoftware}>Add Software Asset</Button>
                                 <Button variant="info addButton" onClick={this.onClickHardware}>Add Hardware Asset</Button>
                             </div>
-                            <div className="col-md-9 col-sm-12 col-xs-12">
-
-                            </div>
+                            
                         </div>
                         <Modal show={this.state.showSoftwareModal} onHide={this.handleModalClose}  className="modalBody" >
                             <Modal.Header closeButton>
@@ -135,10 +135,13 @@ export default class Dashboard extends React.Component {
                     </Tab>
                     <Tab className="tab" eventKey="common_assets" title="Common Assets">
                         <div className='row'>
+                        <div className="col-md-9">
+                            <CommonAssetList/>
+                        </div>
+
                             <div className="col-md-3 col-xs-12 col-sm-12">
                                 <Button variant="info addButton" onClick={this.onClickCommonAsset}>Add New Common Asset</Button>
                             </div>
-                            <div className="col-md-9"></div>
                         </div>
                         <Modal show={this.state.showCommonModal} onHide={this.handleModalClose}  className="modalBody" >
                         <Modal.Header closeButton>

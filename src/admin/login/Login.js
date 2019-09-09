@@ -1,6 +1,9 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import { Button, Form, Alert, Card } from 'react-bootstrap'
+import * as urls from '../../utils/api'
+import {Growl} from 'primereact/growl';
+let fetchApi = require('../../utils/fetch').fetchApi()
 let validators = require('../../validators').validators()
 
 
@@ -11,8 +14,6 @@ export default class Login extends React.Component {
         this.state = {
             email: '',
             password: '',
-            show: false,
-            alertMessage: ''
         }
     }
 
@@ -21,40 +22,38 @@ export default class Login extends React.Component {
         this.setState({[e.target.name]: e.target.value});
     };
 
+    callbackFn = (res) => {
+        if(res.code === 'UF'){
+            this.props.history.push('/dashboard')
+        }
+        if(res.code === 'UNF') {
+            this.growl.show({life: 8000, severity: 'error', summary: 'Login unsuccessful.', detail: 'This email is not registered with us. Kindly register to continue.', closable:'true' });
+        }
+        if(res.code === "WP") {
+            this.growl.show({life: 8000, severity: 'error', summary: 'Incorrect Password.', detail: 'The password entered is incorrect. Please try again.', closable:'true' });
+        }
+    }
+
     handleSubmit = (e) => {
         e.preventDefault()
-        const registered_email = localStorage.getItem("email")
-        const registered_password= localStorage.getItem("password")
-        const {email, password} = this.state
-        
-
-        
-        console.log(this.state.email, this.state.password)
+        const {email, password} = this.state   
+        const body = JSON.stringify({username: this.state.email, password: this.state.password})
         if(email !== '' || password !== ''){
             if (validators.RegexEmail(email)){
-                if(email !== registered_email || password !== registered_password){
-                    this.setState({alertMessage: 'Invalid credentials. Please try again.'})
-                    this.setState({show: true})
-                } 
-                else{
-                    this.setState({show: false})
-                    this.props.history.push('/dashboard')
-                }
+                fetchApi.fetchData(urls.admin_login, 'POST', body, this.callbackFn)                    
             } else{
-                this.setState({show: true})
-                this.setState({alertMessage: 'Please enater a valid email ID.'})
+                this.growl.show({life: 8000, severity: 'error', summary: 'Invalid email.', detail: 'Please enater a valid email ID.', closable:'true' });
             }
 
         } else {
-            this.setState({alertMessage: 'Please enter email and password'})
-            this.setState({show: true})
+            this.growl.show({life: 8000, severity: 'error', summary: 'Invalid credentials.', detail: 'Please enater email and password.', closable:'true' });
         } 
       }
 
     render() {
         return(
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
-                <Alert variant={'info'} show={this.state.show}>{this.state.alertMessage}</Alert>
+                <Growl ref={(el) => this.growl = el} />
                 <h1 style={{color: '#00c2c7'}}>Login</h1>
                 <Card className="col-md-5 col-sm-10 col-xs-10" style={{ height:'auto', padding: '10px' }}>
                     <Card.Body>
