@@ -14,7 +14,8 @@ export default class AddHardwareAsset extends React.Component {
             hardware_name: '',
             desc: '',
             model_no: '',
-            serial_no: ''
+            serial_no: '',
+            hardwares : []
         }
     }
 
@@ -60,9 +61,9 @@ export default class AddHardwareAsset extends React.Component {
                 ValidationChk = 'Please fill valid details' + '\n' + ValidationChk
             }
             else {
-                var arr = []
                 var obj = {hardware_name: hardware_name, desc: desc, model_no: model_no, serial_no: serial_no}
-                localStorage.setItem('New_hardware_assets', arr.push(obj))
+                this.state.hardwares.push(obj)
+                localStorage.setItem('New_hardware_assets', JSON.stringify(this.state.hardwares))
                 this.growl.show({severity: 'success', summary: 'Asset added successfully!', detail: 'New Hardware Asset', closable:'true' });
             }
         } else {

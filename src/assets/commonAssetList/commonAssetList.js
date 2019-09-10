@@ -1,13 +1,8 @@
 import  React from 'react'
-import {Button, Modal, Table} from 'react-bootstrap'
-import {AgGridReact} from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
-import {BootstrapTable, TableHeaderColumn, SearchField, ExportCSVButton} from 'react-bootstrap-table';
+import {Button, Table} from 'react-bootstrap'
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import { CSVLink, CSVDownload } from "react-csv";
-
-
+import './commonAssetList.css'
+import { CSVLink } from "react-csv";
 
 
 export default class commonAssetList extends React.Component {
@@ -25,11 +20,26 @@ export default class commonAssetList extends React.Component {
         this.setState({data, data})
     }
 
-//    onFilterTextBoxChanged = () => {
-//         gridOptions.api.setQuickFilter(document.getElementById('filter-text-box').value);
-//     }
+    searchFilter = () => {
+        var input, filter, found, table, tr, td, i, j;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                }
+            }
+            if (found) {
+                tr[i].style.display = "";
+                found = false;
+            } else if (tr[i].id != 'tableHeader'){tr[i].style.display = "none";}
+        }
+    }
 
-  
     render() {
         console.log(this.state.data)
         this.state.data.map(item => console.log('Item', item))
@@ -44,33 +54,37 @@ export default class commonAssetList extends React.Component {
           }
         return(
             <div >
-            <CSVLink data={this.state.data}><Button variant="success">Export CSV</Button> </CSVLink>
+                <CSVLink data={this.state.data}><Button variant="success">Export CSV</Button> </CSVLink>
+                <input type="text" id="myInput" style={{float:"right", borderRadius: '3px', height: '2.2rem', width: '15rem', borderWidth: 1,borderColor: '#CDC9C8', boxShadow: 'none', outline: 0}} onKeyUp={this.searchFilter} placeholder="Search.."/    >
 
-            <Table striped bordered hover responsive>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Model Number</th>
-                                        <th>Serial Number</th>
+                <Table striped bordered hover responsive id="myTable" style={{marginTop: '20px'}}>
+                        <thead>
+                            <tr  id='tableHeader'>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Model Number</th>
+                                <th>Serial Number</th>
+                                <th>Unit Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.data && this.state.data.map((item) => {
+                            return(
+                                <tr>
+                                    <td>{item.name}</td>
+                                    <td>{item.desc}</td>
+                                    <td>{item.category}</td>
+                                    <td>{item.model_number}</td>
+                                    <td>{item.serial_number}</td>
+                                    <td>{item.unit_price}</td>
                                     
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.data && this.state.data.map((item) => {
-                                    return(
-                                        <tr>
-                                            <td>{item.name}</td>
-                                            <td>{item.desc}</td>
-                                            <td>{item.model_number}</td>
-                                            <td>{item.serial_number}</td>
-                                           
-                                        </tr>
-                                    )
-                                }  
-                                )}
-                                </tbody>
-                            </Table>
+                                </tr>
+                            )
+                        }  
+                        )}
+                        </tbody>
+                </Table>
             </div>
         )
     }

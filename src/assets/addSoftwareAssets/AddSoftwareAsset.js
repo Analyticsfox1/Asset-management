@@ -21,7 +21,8 @@ export default class AddSoftwareAsset extends React.Component {
             other: '',
             purchase_date: new Date(),
             expiry_date: new Date(),
-            disableOther: true
+            disableOther: true,
+            softwares: []
         }
     }
 
@@ -70,8 +71,8 @@ export default class AddSoftwareAsset extends React.Component {
             }
             else {
                 var obj = {software_name: software_name, license_name: license_name, license_identification_number: license_identification_number, desc: desc, cost: cost, software_category: software_category, other: other,purchase_date: purchase_date,expiry_date: expiry_date}
-                var arr = []
-                localStorage.setItem('New_software_asset', arr.push(obj))
+                this.state.softwares.push(obj)
+                localStorage.setItem('New_software_asset', JSON.stringify(this.state.softwares))
                 this.growl.show({life: 8000, severity: 'success', summary: 'Software asset added successfully!', detail: 'New Software Asset was successfully added.', closable:'true' });
             }
         }

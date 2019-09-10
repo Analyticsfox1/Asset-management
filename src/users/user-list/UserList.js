@@ -4,6 +4,7 @@ import {Button, Modal, Table} from 'react-bootstrap'
 // import {Column} from 'primereact/column';
 import {BootstrapTable, TableHeaderColumn, SearchField, ExportCSVButton} from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import './UserList.css'
 
 
 export default class UserList extends React.Component {
@@ -91,7 +92,7 @@ export default class UserList extends React.Component {
                             <p><b>Hardware Assets</b></p>
                             <Table striped bordered hover responsive>
                                 <thead>
-                                    <tr>
+                                    <tr id='tableHeader'>
                                         <th>Name</th>
                                         <th>Description</th>
                                         <th>Model Number</th>
