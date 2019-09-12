@@ -8,6 +8,8 @@ import AddSoftwareAsset from '../../assets/addSoftwareAssets/AddSoftwareAsset'
 import AddHardwareAsset from '../../assets/addHardwareAsset/AddHardwareAsset'
 import AddCommonAsset from '../../assets/addCommonAsset/addCommonAsset';
 import CommonAssetList from '../../assets/commonAssetList/commonAssetList';
+import AssetList from '../../assets/assetList/assetlist';
+import Chart from '../dashboard/charts'
 
 export default class Dashboard extends React.Component {
     constructor(props) {
@@ -54,11 +56,13 @@ export default class Dashboard extends React.Component {
             <div className="main-container">
                 <Tabs defaultActiveKey="dashboard" className="tabs">
                     <Tab className="tab" eventKey="dashboard" title="DASHBOARD">
-                        <p>DASHBOARD</p>
+                        <Chart/>
                     </Tab>
                     <Tab className="tab" eventKey="assets" title="ASSETS">
                         <div className="row">
-                        <div className="col-md-9 col-sm-12 col-xs-12"></div>
+                        <div className="col-md-9 col-sm-12 col-xs-12">
+                            <AssetList> </AssetList>
+                        </div>
                             <div className="col-md-3 col-sm-12 col-xs-12 section">
                                 <Button variant="info addButton" onClick={this.onClickSoftware}>Add Software Asset</Button>
                                 <Button variant="info addButton" onClick={this.onClickHardware}>Add Hardware Asset</Button>

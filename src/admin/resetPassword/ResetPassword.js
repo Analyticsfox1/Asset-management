@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import {Button, Card, Form, Alert} from 'react-bootstrap'
+import {Button, Card, Form} from 'react-bootstrap'
 import * as urls from '../../utils/api'
 import {Growl} from 'primereact/growl';
 
@@ -32,7 +32,6 @@ export default class ResetPassword extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        console.log(this.state.email, this.state.password, this.state.cpassword)
         if(this.state.email === '' || this.state.password === '' || this.state.cpassword === ''){
             this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful', detail: 'Please fill all the fields.', closable:'true' });
         } 

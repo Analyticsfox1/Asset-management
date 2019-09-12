@@ -1,9 +1,9 @@
 import React from 'react'
-import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
-import DatePicker from "react-datepicker";
+import {Form, Card, Button } from 'react-bootstrap'
 import './addHardwareAsset.css'
 import {Growl} from 'primereact/growl';
-
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/nova-light/theme.css'
 let validators = require('../../validators').validators()
 
 export default class AddHardwareAsset extends React.Component {
@@ -16,6 +16,12 @@ export default class AddHardwareAsset extends React.Component {
             model_no: '',
             serial_no: '',
             hardwares : []
+        }
+    }
+
+    componentDidMount() {
+        if(localStorage.getItem('New_hardware_assets')){
+            this.setState({hardwares: JSON.parse(localStorage.getItem('New_hardware_assets'))})
         }
     }
 
@@ -33,10 +39,8 @@ export default class AddHardwareAsset extends React.Component {
 
     handleChange = (e) => {
         this.setState({[e.target.name] : e.target.value})
-        if(e.target.name == "other" || (e.target.name == "software_category" && e.target.value == "Other")) {
-            console.log('Before',this.state.disableOther)
+        if(e.target.name === "other" || (e.target.name === "software_category" && e.target.value === "Other")) {
             this.setState({disableOther: false})
-            console.log('After',this.state.disableOther)
         } else {
             this.setState({disableOther: true})
         }
@@ -58,7 +62,7 @@ export default class AddHardwareAsset extends React.Component {
                 ValidationChk += 'Serial Number should be alphanumeric'
             }
             if(ValidationChk !== ''){
-                ValidationChk = 'Please fill valid details' + '\n' + ValidationChk
+                ValidationChk = 'Please fill valid details -'  + ValidationChk
             }
             else {
                 var obj = {hardware_name: hardware_name, desc: desc, model_no: model_no, serial_no: serial_no}
@@ -69,9 +73,9 @@ export default class AddHardwareAsset extends React.Component {
         } else {
             this.growl.show({severity: 'danger', summary: 'Unsuccessful - Fill mandatory fields', detail: 'Hardware name, model number and serial number are mandatory', closable:'true' });
         }
-        console.log(this.state)
     }
     render() {
+        
         return (
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', height:'auto', flexDirection:'column', padding:'30px'}}>
                 <h2 style={{color: '#00c2c7'}}>New Hardware Asset</h2>

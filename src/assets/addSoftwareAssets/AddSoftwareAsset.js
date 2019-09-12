@@ -1,5 +1,5 @@
 import React from 'react'
-import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
+import {Form, Card, Button } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import './addSoftwareAssets.css'
 import {Growl} from 'primereact/growl';
@@ -26,6 +26,12 @@ export default class AddSoftwareAsset extends React.Component {
         }
     }
 
+    componentDidMount() {
+        if(localStorage.getItem('New_software_assets')) {
+            this.setState({softwares:JSON.parse(localStorage.getItem('New_software_assets'))})
+        }
+    }
+
     handlePurchaseDateChange = (date) => {
         this.setState({
           purchase_date: date, 
@@ -40,10 +46,8 @@ export default class AddSoftwareAsset extends React.Component {
 
     handleChange = (e) => {
         this.setState({[e.target.name] : e.target.value})
-        if(e.target.name == "other" || (e.target.name == "software_category" && e.target.value == "Other")) {
-            console.log('Before',this.state.disableOther)
+        if(e.target.name === "other" || (e.target.name === "software_category" && e.target.value === "Other")) {
             this.setState({disableOther: false})
-            console.log('After',this.state.disableOther)
         } else {
             this.setState({disableOther: true})
         }
@@ -72,7 +76,7 @@ export default class AddSoftwareAsset extends React.Component {
             else {
                 var obj = {software_name: software_name, license_name: license_name, license_identification_number: license_identification_number, desc: desc, cost: cost, software_category: software_category, other: other,purchase_date: purchase_date,expiry_date: expiry_date}
                 this.state.softwares.push(obj)
-                localStorage.setItem('New_software_asset', JSON.stringify(this.state.softwares))
+                localStorage.setItem('New_software_assets', JSON.stringify(this.state.softwares))
                 this.growl.show({life: 8000, severity: 'success', summary: 'Software asset added successfully!', detail: 'New Software Asset was successfully added.', closable:'true' });
             }
         }

@@ -1,6 +1,5 @@
 import React from 'react'
 import {Card, Form, InputGroup, Button, FormControl} from 'react-bootstrap'
-import {MultiSelect} from 'primereact/multiselect';
 import '../../bootstrap-multiselect.css'
 import DatePicker from "react-datepicker";
 import 'primereact/resources/primereact.min.css';
@@ -31,7 +30,7 @@ export default class AddUser extends React.Component {
             status: '',
             list_hardware: [],
             list_software: [],
-            hardware_assets_owned: {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date( ),product_warranty:'', earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }},
+            hardware_assets_owned: {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date( ), earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }},
             software_assets_owned: {category: '', details: { license_name: '', license_identification_number: '', software_description: '', software_cost: '', software_sub_category: '', software_purchase_date: new Date(), software_expiry_date: new Date()}},
             hardware_category: '',
             prod_description: '', ram:'', supplier: '', model_number:'', serial_number:'',purchase_date:new Date(), issue_date:new Date(), product_warranty:'', earlier_used:'',product_remarks:'', product_cost:''  ,
@@ -131,9 +130,6 @@ export default class AddUser extends React.Component {
         if(!validators.RegularExpressionMobileNumber(mobile)){
             ValidationChk += '-Mobile Number'
         }
-        if(!validators.RegexAlphaNumeric(address)){
-            ValidationChk += '-Address'
-        }
         if(!validators.RegexNames(department)){
             ValidationChk += '-Department'
         }
@@ -158,22 +154,21 @@ export default class AddUser extends React.Component {
     
             localStorage.setItem("software_assets", JSON.stringify(this.state.list_software))
     
-            console.log(user_data, this.state.list_hardware, this.state.list_software )
             this.growl.show({life: 8000, severity: 'success', summary: 'Employee added successfully!', detail: 'Employee Details were successfully added.', closable:'true' });
+            
+            // window.location.reload();
+
         }
     }
 
     addHardwareAsset = () => {
         var details = this.state.hardware_assets_owned.details
         let ValidationChk = '';
-        if(!validators.RegexAlphaNumeric(details.prod_description)){
-            ValidationChk +=  ' -Product Description must be alphanumeric';
-        } 
         if(!validators.RegexAlphaNumeric(details.serial_number)){
-            ValidationChk +=  '-Serial Number must be alphanumeric';
+            ValidationChk +=  '-Serial Number must not contain spaces';
         }
         if(!validators.RegexAlphaNumeric(details.model_number)){
-            ValidationChk +=  '-Model Number must be alphanumeric';
+            ValidationChk +=  '-Model Number must not contain spaces';
         }
         if(!validators.RegexAlphaNumericWarranty(details.product_warranty)){
             ValidationChk +=  '-Warranty must be 6 characters alphanumeric';
@@ -185,7 +180,6 @@ export default class AddUser extends React.Component {
             this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful. Please fill valid details', detail: ValidationChk, closable:'true' });
         }
         else {
-            console.log("Add more",this.state.hardware_assets_owned)
 
             let hardware_assets_owned = {};
         
@@ -193,7 +187,6 @@ export default class AddUser extends React.Component {
             
             this.state.list_hardware.push(hardware_assets_owned)
             
-            console.log('List of hardware assets',this.state.list_hardware)
             this.growl.show({life: 8000, severity: 'success', summary: 'Hardware Asset added successfully!', detail: 'Hardware asset was successfully added.', closable:'true' });
         }
     }
@@ -202,11 +195,10 @@ export default class AddUser extends React.Component {
         var details = this.state.software_assets_owned.details
         let ValidationChk = ''
         if(!validators.RegexAlphaNumeric(details.license_name)){
-            ValidationChk += '-License name must be alphanumeric'
+            ValidationChk += '-License name must not contain spaces'
         }
         if(!validators.RegexAlphaNumeric(details.license_identification_number)){
-            console.log(details.license_identification_number)
-            ValidationChk += '-License Identification Number must be alphanumeric.'
+            ValidationChk += '-License Identification Number must not contain spaces.'
         }
         if(!validators.RegexPrice(details.software_cost)){
             ValidationChk += '-Software Cost must be numeric'
@@ -221,7 +213,6 @@ export default class AddUser extends React.Component {
             
             this.state.list_software.push(software_assets_owned)
             
-            console.log('List of software assets', this.state.list_software)
             this.growl.show({life: 8000, severity: 'success', summary: 'Software Asset added successfully!', detail: 'Software asset was successfully added.', closable:'true' });
 
         }
@@ -238,7 +229,7 @@ export default class AddUser extends React.Component {
        this.refs.remarks.value = '' 
        this.refs.product_cost.value= ''
        this.refs.product_warranty.value = ''
-       this.state.hardware_assets_owned= {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date( ),product_warranty:'', earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }}   
+       this.state.hardware_assets_owned= {category: '', details: { prod_description: '', ram: '', supplier: '', model_number: '', serial_number: '', purchase_date: new Date(), issue_date: new Date(), earlier_used: '', product_warranty: '', product_cost: '', remarks:'' }}   
     }
 
     handleSoftwareAddMore = () => {
@@ -510,7 +501,7 @@ export default class AddUser extends React.Component {
                                         </div> 
                                     <div className="col-md-4">
                                         <Form.Group className="form-group required">
-                                            <Form.Label className="control-label">Software Category</Form.Label>
+                                            <Form.Label className="control-label">Software Sub Category</Form.Label>
                                             <Form.Control as="select" name="software_sub_category" onChange={this.handleChange}> 
                                                 <option>Category 1</option>
                                                 <option>Category 2</option>

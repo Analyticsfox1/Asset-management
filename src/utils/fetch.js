@@ -15,8 +15,6 @@ fetchApi.fetchData = function(url, method, body, callback) {
     if(body !== null){
         options["body"] = body
     }
-
-    console.log('Optios', options)
     
     try {
         fetch(url, options)

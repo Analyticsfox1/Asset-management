@@ -5,7 +5,7 @@ exports.validators = function() {
 
 validators.RegexAlphaNumeric=function(txt){
     var isValid=false;
-    var regex= /^[a-zA-Z0-9]*$/g;
+    var regex= /^[\w\-\s]+$/g;
 
     if(txt !== null && txt.trim() !== ""){
         if(txt.length >=3 && txt.length<=50 ) {
@@ -77,7 +77,6 @@ validators.RegexPassword=function(txt){
 validators.RegexNames=function(txt){
     var isValid=false;
     var regex = /([a-zA-Z])$/g;
-    console.log("Function called");
     if(txt !== null){
         
         if(regex.test(txt)==true){

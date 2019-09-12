@@ -1,5 +1,5 @@
 import React from 'react'
-import {Form, Card, Button, InputGroup, FormControl } from 'react-bootstrap'
+import {Form, Card, Button } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
 import './addCommonAsset.css'
 import {Growl} from 'primereact/growl';
@@ -26,6 +26,15 @@ export default class AddCommonAsset extends React.Component {
         }
     }
 
+    componentDidMount() {
+        if(localStorage.getItem('common_assets')) {
+           var arr = JSON.parse(localStorage.getItem('common_assets'))
+           arr.map(item => 
+            this.state.asset_list.push(item)
+           )
+        } 
+    }
+
     handlePurchaseDate = (date) => {
         this.setState({
           purchase_date: date, 
@@ -40,10 +49,8 @@ export default class AddCommonAsset extends React.Component {
 
     handleChange = (e) => {
         this.setState({[e.target.name] : e.target.value})
-        if(e.target.name == "other" || (e.target.name == "software_category" && e.target.value == "Other")) {
-            console.log('Before',this.state.disableOther)
+        if(e.target.name === "other" || (e.target.name === "software_category" && e.target.value === "Other")) {
             this.setState({disableOther: false})
-            console.log('After',this.state.disableOther)
         } else {
             this.setState({disableOther: true})
         }
@@ -53,11 +60,8 @@ export default class AddCommonAsset extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault()
         var ValidationChk = ''
-        console.log('State',this.state)
        const { name, desc, category, supplier, price, unit_value, qty, model_number, serial_number, purchase_date} = this.state
-       console.log('name', name)
         if( name !== "" || price !== "" || model_number !== "" || serial_number !== ""){
-            console.log('handleSubmit')
             if(!validators.RegexPrice(price)){
                 ValidationChk += '-Price should be numeric'
             }
@@ -81,6 +85,7 @@ export default class AddCommonAsset extends React.Component {
                 this.state.asset_list.push(common_obj)
                 localStorage.setItem("common_assets", JSON.stringify(this.state.asset_list) )
                 this.growl.show({life: 8000, severity: 'success', summary: 'Asset added successfully!', detail: 'New Software Asset', closable:'true' });
+                window.location.reload()
             }
         }
         else {

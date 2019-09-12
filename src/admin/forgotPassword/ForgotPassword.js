@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import {Card, Form, Button, Alert} from 'react-bootstrap'
+import {Card, Form, Button} from 'react-bootstrap'
 import * as urls from '../../utils/api'
 import {Growl} from 'primereact/growl';
 
@@ -30,7 +30,6 @@ export default class ForgotPassword extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        console.log(this.state.email)
         if (this.state.email === ''){
             this.growl.show({life: 8000, severity: 'error', summary: 'Unsuccessful', detail: 'Please enter registered email ID.', closable:'true' });
         } 
